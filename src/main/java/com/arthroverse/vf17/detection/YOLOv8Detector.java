@@ -23,34 +23,6 @@ public class YOLOv8Detector {
         session = env.createSession(modelPath, opts);
     }
 
-    public List<Detection> detect(String imagePath) throws Exception {
-        // Load and preprocess image
-        BufferedImage image = ImageIO.read(new File(imagePath));
-        float[] inputData = preprocessImage(image);
-
-        // Create input tensor
-        long[] shape = {1, 3, inputHeight, inputWidth};
-        OnnxTensor inputTensor = OnnxTensor.createTensor(env,
-                FloatBuffer.wrap(inputData), shape);
-
-        // Run inference
-        Map<String, OnnxTensor> inputs = new HashMap<>();
-        inputs.put(session.getInputNames().iterator().next(), inputTensor);
-
-        OrtSession.Result results = session.run(inputs);
-
-        // Process outputs
-        float[][] output = processOutput(results);
-        List<Detection> detections = postProcess(output, image.getWidth(),
-                image.getHeight());
-
-        // Cleanup
-        inputTensor.close();
-        results.close();
-
-        return detections;
-    }
-
     private float[] preprocessImage(BufferedImage image) {
         // Resize image to input dimensions
         BufferedImage resized = new BufferedImage(inputWidth, inputHeight,
