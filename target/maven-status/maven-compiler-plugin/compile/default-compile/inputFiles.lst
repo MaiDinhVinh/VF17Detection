@@ -1,2 +1,4 @@
-/Users/ducksabervn/DATA/coding/Gumball1011/src/main/java/com/arthroverse/vf17/VF17Main.java
-/Users/ducksabervn/DATA/coding/Gumball1011/src/main/java/com/arthroverse/vf17/YOLOv8Detector.java
+/Users/ducksabervn/DATA/coding/VF17Detection/src/main/java/com/arthroverse/vf17/detection/DetectionHandler.java
+/Users/ducksabervn/DATA/coding/VF17Detection/src/main/java/com/arthroverse/vf17/detection/YOLOv8Detector.java
+/Users/ducksabervn/DATA/coding/VF17Detection/src/main/java/com/arthroverse/vf17/main/VF17Main.java
+/Users/ducksabervn/DATA/coding/VF17Detection/src/main/java/com/arthroverse/vf17/uicontrollers/HomepageUIController.java

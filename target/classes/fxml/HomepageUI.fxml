@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane stylesheets="@../css/HomePage.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arthroverse.vf17.uicontrollers.HomepageUIController">
+    <top>
+        <VBox style="-fx-background-color: linear-gradient(to right, #332D7B, #42A5F5); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);">
+            <children>
+                <HBox alignment="CENTER" spacing="20.0">
+                    <children>
+                        <Label styleClass="user_welcome_message" text="VF17Detection" textFill="WHITE">
+                            <font>
+                                <Font name="Segoe UI" size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <VBox style="-fx-background-color: #f8f9fa;">
+            <children>
+                <HBox prefHeight="700.0" prefWidth="1000.0" spacing="15.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <VBox prefHeight="700.0" prefWidth="668.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <StackPane VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);" />
+                                        <VBox prefHeight="700.0" prefWidth="858.0" spacing="15.0">
+                                            <children>
+                                                <HBox alignment="CENTER" spacing="12.0">
+                                                    <children>
+                                                        <Label fx:id="labelCurrentQuestion" styleClass="other_text_bold" text="Main Camera">
+                                                            <font>
+                                                                <Font size="20.0" />
+                                                            </font>
+                                          </Label>
+                                                    </children>
+                                                </HBox>
+                                                <Separator />
+                                                <MFXScrollPane fitToWidth="true" prefHeight="742.0" prefWidth="445.0" VBox.vgrow="ALWAYS">
+                                                    <content>
+                                                        <VBox>
+                                                            <children>
+                                                                <ImageView fx:id="mainCamView" fitHeight="574.0" fitWidth="822.0" pickOnBounds="true" preserveRatio="true" />
+                                                            </children>
+                                                        </VBox>
+                                                    </content></MFXScrollPane>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </VBox>
+                        <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <StackPane prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);" />
+                                        <VBox prefHeight="689.0" prefWidth="498.0" spacing="20.0">
+                                            <children>
+                                    <HBox alignment="CENTER" spacing="12.0">
+                                       <children>
+                                          <Label fx:id="labelCurrentQuestion1" styleClass="other_text_bold" text="Output">
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <Separator />
+                                                <HBox spacing="10.0" />
+                                                <MFXScrollPane fx:id="inferOutputPane" fitToWidth="true" prefHeight="661.0" prefWidth="446.0" VBox.vgrow="ALWAYS">
+                                                    <content>
+                                                        <VBox fx:id="outputLogContainer" prefWidth="400.0" spacing="10.0">
+                                                            <padding>
+                                                                <Insets left="5.0" />
+                                                            </padding>
+                                                        </VBox>
+                                                    </content>
+                                                </MFXScrollPane>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="20.0" left="25.0" right="25.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </StackPane>
+                            </children></VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+    <bottom>
+        <VBox prefHeight="84.0" prefWidth="1360.0">
+            <children>
+                <HBox alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="43.0" prefWidth="1109.0" spacing="30.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <VBox alignment="CENTER" spacing="5.0" />
+                            </children>
+                            <padding>
+                                <Insets left="250.0" />
+                            </padding>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+            </padding>
+        </VBox>
+    </bottom>
+</BorderPane>
