@@ -13,12 +13,10 @@
 
 .user_welcome_sub_message{
     -fx-font-family: 'JetBrains Mono Regular';
-    -fx-text-fill: #FFFFFF;
 }
 
 .user_welcome_message{
     -fx-font-family: 'JetBrains Mono Bold Italic';
-    -fx-text-fill: #FFFFFF;
 }
 
 .other_text{
