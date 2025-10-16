@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 public class VF17Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        primaryStage.setTitle("nigger");
+        primaryStage.setTitle("VF17Detection");
         UserAgentBuilder.builder()
                 .themes(JavaFXThemes.MODENA) // Optional if you don't need JavaFX's default theme, still recommended though
                 .themes(MaterialFXStylesheets.forAssemble(true)) // Adds the MaterialFX's default theme. The boolean argument is to include legacy controls
