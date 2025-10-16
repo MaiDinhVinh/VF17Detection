@@ -24,16 +24,13 @@ public class YOLOv8Detector {
     }
 
     private float[] preprocessImage(BufferedImage image) {
-        // Resize image to input dimensions
         BufferedImage resized = new BufferedImage(inputWidth, inputHeight,
                 BufferedImage.TYPE_INT_RGB);
         resized.getGraphics().drawImage(image, 0, 0, inputWidth, inputHeight, null);
 
-        // Convert to CHW format and normalize
         float[] data = new float[3 * inputHeight * inputWidth];
         int idx = 0;
 
-        // RGB channels
         for (int c = 0; c < 3; c++) {
             for (int h = 0; h < inputHeight; h++) {
                 for (int w = 0; w < inputWidth; w++) {
@@ -52,8 +49,6 @@ public class YOLOv8Detector {
         OnnxValue outputValue = results.get(0);
         float[][][] rawOutput = (float[][][]) outputValue.getValue();
 
-        // YOLOv8 output shape is [1, 84, 8400] for COCO dataset
-        // Transpose to [8400, 84]
         int numDetections = rawOutput[0][0].length;
         int numFeatures = rawOutput[0].length;
 
@@ -98,7 +93,6 @@ public class YOLOv8Detector {
             }
         }
 
-        // Apply Non-Maximum Suppression
         return applyNMS(detections);
     }
 
@@ -137,7 +131,6 @@ public class YOLOv8Detector {
         env.close();
     }
 
-    // Detection class to hold results
     public static class Detection {
         public float x1, y1, x2, y2;
         public float confidence;
@@ -157,46 +150,37 @@ public class YOLOv8Detector {
     public List<Detection> detect(Mat frame) throws OrtException {
         float[] inputData = preprocessMat(frame);
 
-        // Create input tensor
         long[] shape = {1, 3, inputHeight, inputWidth};
         OnnxTensor inputTensor = OnnxTensor.createTensor(env,
                 FloatBuffer.wrap(inputData), shape);
 
-        // Run inference
         Map<String, OnnxTensor> inputs = new HashMap<>();
         inputs.put(session.getInputNames().iterator().next(), inputTensor);
 
         OrtSession.Result results = session.run(inputs);
 
-        // Process outputs
         float[][] output = processOutput(results);
         List<Detection> detections = postProcess(output, frame.width(), frame.height());
 
-        // Cleanup
         inputTensor.close();
         results.close();
 
         return detections;
     }
 
-    // Preprocess OpenCV Mat
     private float[] preprocessMat(Mat frame) {
-        // Resize frame to model input size
         Mat resized = new Mat();
         Imgproc.resize(frame, resized, new Size(inputWidth, inputHeight));
 
-        // Convert BGR to RGB
         Mat rgb = new Mat();
         Imgproc.cvtColor(resized, rgb, Imgproc.COLOR_BGR2RGB);
 
-        // Convert to float array in CHW format
         float[] data = new float[3 * inputHeight * inputWidth];
         int idx = 0;
 
         byte[] pixels = new byte[(int) rgb.total() * rgb.channels()];
         rgb.get(0, 0, pixels);
 
-        // Convert to CHW format and normalize
         for (int c = 0; c < 3; c++) {
             for (int h = 0; h < inputHeight; h++) {
                 for (int w = 0; w < inputWidth; w++) {
