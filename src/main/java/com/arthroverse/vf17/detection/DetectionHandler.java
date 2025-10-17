@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.arthroverse.vf17.uicontrollers.HomepageUIController;
 
+import com.fazecast.jSerialComm.SerialPort;
+
 public class DetectionHandler {
 
     private static final String[] ALL_CLASSES = {
@@ -50,7 +52,7 @@ public class DetectionHandler {
     private double currentFps = 0;
 
     private final Map<String, Long> detectedObjects = new HashMap<>();
-    private static final int CONSECUTIVE_FRAMES_REQUIRED = 20;
+    private static final int CONSECUTIVE_FRAMES_REQUIRED = 30;
     private final Map<String, Integer> detectionCounter = new HashMap<>();
 
     public DetectionHandler() throws Exception {
