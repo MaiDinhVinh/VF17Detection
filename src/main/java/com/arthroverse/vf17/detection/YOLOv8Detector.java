@@ -1,9 +1,6 @@
 package com.arthroverse.vf17.detection;
 
 import ai.onnxruntime.*;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.FloatBuffer;
 import java.util.*;
 import org.opencv.core.*;
@@ -21,28 +18,6 @@ public class YOLOv8Detector {
         env = OrtEnvironment.getEnvironment();
         OrtSession.SessionOptions opts = new OrtSession.SessionOptions();
         session = env.createSession(modelPath, opts);
-    }
-
-    private float[] preprocessImage(BufferedImage image) {
-        BufferedImage resized = new BufferedImage(inputWidth, inputHeight,
-                BufferedImage.TYPE_INT_RGB);
-        resized.getGraphics().drawImage(image, 0, 0, inputWidth, inputHeight, null);
-
-        float[] data = new float[3 * inputHeight * inputWidth];
-        int idx = 0;
-
-        for (int c = 0; c < 3; c++) {
-            for (int h = 0; h < inputHeight; h++) {
-                for (int w = 0; w < inputWidth; w++) {
-                    int rgb = resized.getRGB(w, h);
-                    int channel = (c == 0) ? ((rgb >> 16) & 0xFF) :
-                            (c == 1) ? ((rgb >> 8) & 0xFF) :
-                                    (rgb & 0xFF);
-                    data[idx++] = channel / 255.0f;  // Normalize to [0, 1]
-                }
-            }
-        }
-        return data;
     }
 
     private float[][] processOutput(OrtSession.Result results) throws OrtException {
@@ -66,13 +41,11 @@ public class YOLOv8Detector {
         List<Detection> detections = new ArrayList<>();
 
         for (float[] detection : output) {
-            // Extract box coordinates and confidence
             float x_center = detection[0];
             float y_center = detection[1];
             float width = detection[2];
             float height = detection[3];
 
-            // Find class with highest confidence
             float maxConf = 0;
             int classId = 0;
             for (int i = 4; i < detection.length; i++) {
@@ -83,7 +56,6 @@ public class YOLOv8Detector {
             }
 
             if (maxConf > confThreshold) {
-                // Convert to corner coordinates
                 float x1 = (x_center - width / 2) * originalWidth / inputWidth;
                 float y1 = (y_center - height / 2) * originalHeight / inputHeight;
                 float x2 = (x_center + width / 2) * originalWidth / inputWidth;
