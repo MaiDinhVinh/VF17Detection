@@ -1,3 +1,22 @@
+/******************************************************************************
+ * Project Name:    [Gumball - VF17Detection]
+ * Course:          [CECS1011 - Intro to CECS]
+ * Semester:        [Fall 2025]
+ * <p>
+ * Members:         Dinh Hieu Minh <25minh.dh2@vinuni.edu.vn>,
+ *                  Duc Phat Hoang <25phat.hd@vinuni.edu.vn>,
+ *                  Le Ngoc Han <25han.ln@vinuni.edu.vn>,
+ *                  Ngo Van Thang <25thang.nv@vinuni.edu.vn>,
+ *                  Mai Dinh Vinh <25vinh.md@vinuni.edu.vn>
+ * <p>
+ * Date Created:    [10-15-2025]
+ * Last Modified:   [10-22-2025]
+ * <p>
+ * File Name:       [VF17Main.java]
+ * Developer:       Mai Dinh Vinh
+ * Description:     [The main entry point of the entire application]
+ ******************************************************************************/
+
 package com.arthroverse.vf17.main;
 
 import com.arthroverse.vf17.uicontrollers.HomepageUIController;
@@ -11,6 +30,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class VF17Main extends Application {
+    /**
+     * This is actual JavaFX code convention, I totally don't know why they need this method though
+     * But if you want to do anything before initialize all UIs, you have to do it here
+     *
+     * It is kinda stupid though I'm not gonna lie
+     * @author Le Ngoc Han
+     *
+     * @Version 1.0*/
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("VF17Detection");
