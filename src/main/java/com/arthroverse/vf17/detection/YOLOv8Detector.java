@@ -1,3 +1,21 @@
+/******************************************************************************
+ * Project Name:    [Gumball - VF17Detection]
+ * Course:          [CECS1011 - Intro to CECS]
+ * Semester:        [Fall 2025]
+ * <p>
+ * Members:         Dinh Hieu Minh <25minh.dh2@vinuni.edu.vn>,
+ *                  Duc Phat Hoang <25phat.hd@vinuni.edu.vn>,
+ *                  Le Ngoc Han <25han.ln@vinuni.edu.vn>,
+ *                  Ngo Van Thang <25thang.nv@vinuni.edu.vn>,
+ *                  Mai Dinh Vinh <25vinh.md@vinuni.edu.vn>
+ * <p>
+ * Date Created:    [10-20-2025]
+ * Last Modified:   [10-22-2025]
+ * <p>
+ * File Name:       [YOLOv8Detector.java]
+ * Developer:       Duc Phat Hoang, Ngo Van Thang, Mai Dinh Vinh
+ * Description:     [The source code that is the main Java Classifications model]
+ ******************************************************************************/
 package com.arthroverse.vf17.detection;
 
 import ai.onnxruntime.*;
@@ -7,19 +25,52 @@ import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 public class YOLOv8Detector {
-    private OrtEnvironment env;
-    private OrtSession session;
-    private final int inputWidth = 640;
-    private final int inputHeight = 640;
+    /**
+     * There are all of the fields (parameters) used for the main YOLO Classification models
+     *
+     * @author Mai Dinh Vinh
+     *
+     * @Version 1.0
+     * */
+    private OrtEnvironment env; //this is the ONNX Runtime Environment
+    private OrtSession session; //This is the ONNX session
+    private final int inputWidth = 640; //the width of the input image
+    private final int inputHeight = 640; //the height of the input image
+
+    /**
+     * This is called the Confidence Threshold, where certain objects with certain detection confidence
+     * will be keep. In this situation, all objects with detection confidence >= 0.25*/
     private final float confThreshold = 0.25f;
+
+    /**
+     * This is called Intersection over Union threshold<p>
+     *
+     * A same object might be detected twice or more with slightly different boxes.
+     * Therefore, Interfection over Union threshold is used to determine the amount of overlap between
+     * the detection boxes and if they are in the same classes => keep the highest confidence box*/
     private final float iouThreshold = 0.45f;
 
+    /**
+     * This constructor will initalize the ONNX Runtime environment and ONNX session and then
+     * pass the model path to the method {@code createSession(modelPaths ,opts}
+     *
+     * @author Mai Dinh Vinh
+     *
+     * @Version 1.0
+     * */
     public YOLOv8Detector(String modelPath) throws OrtException {
         env = OrtEnvironment.getEnvironment();
         OrtSession.SessionOptions opts = new OrtSession.SessionOptions();
         session = env.createSession(modelPath, opts);
     }
 
+    /**
+     * This method will return a transposed matrix from the ONNX Runtime result
+     *
+     * @author Mai Dinh Vinh
+     *
+     * @Version 1.0
+     * */
     private float[][] processOutput(OrtSession.Result results) throws OrtException {
         OnnxValue outputValue = results.get(0);
         float[][][] rawOutput = (float[][][]) outputValue.getValue();
@@ -36,6 +87,17 @@ public class YOLOv8Detector {
         return transposed;
     }
 
+    /**
+     * This method will return a list consisting of Detection boxes which has been created
+     * after the process of raw output from the ONNX runtime<p>
+     *
+     * This method will determine if the confidence is strictly higher than the {@code confThreshold}
+     * and then create a new Detection box instance and add it to the returning list
+     *
+     * @author Mai Dinh Vinh
+     *
+     * @Version 1.0
+     * */
     private List<Detection> postProcess(float[][] output, int originalWidth,
                                         int originalHeight) {
         List<Detection> detections = new ArrayList<>();
@@ -68,6 +130,16 @@ public class YOLOv8Detector {
         return applyNMS(detections);
     }
 
+    /**
+     * This method will be used to apply the Intersection over Union threshold mechanism
+     * commonly known as (Non-maximum Suppression). After determined which detection boxes has the
+     * highest confidence, NMS will be used to eliminate duplication boxes based on the
+     * iOu threshold declared above
+     *
+     * @author Ngo Van Thang
+     *
+     * @Version 1.0
+     * */
     private List<Detection> applyNMS(List<Detection> detections) {
         detections.sort((a, b) -> Float.compare(b.confidence, a.confidence));
         List<Detection> result = new ArrayList<>();
@@ -84,6 +156,13 @@ public class YOLOv8Detector {
         return result;
     }
 
+    /**
+     * This is a helper method for the {@code applyNMS(List<Detection> detections)} method above
+     * where it calculates the IoU value between 2 nearest detections
+     *
+     * @author Ngo Van Thang
+     *
+     * @Version 1.0*/
     private float calculateIoU(Detection a, Detection b) {
         float x1 = Math.max(a.x1, b.x1);
         float y1 = Math.max(a.y1, b.y1);
@@ -98,11 +177,26 @@ public class YOLOv8Detector {
         return intersection / union;
     }
 
+    /**
+     * This method is used to close all ONNX runtime environment and the
+     * ONNX runtime
+     *
+     * @author Ngo Van Thang
+     *
+     * @Version 1.0
+     * */
     public void close() throws OrtException {
         session.close();
         env.close();
     }
 
+    /**
+     * This class serves as a detection box instance
+     *
+     * @author Duc Phat Hoang
+     *
+     * @Version 1.0
+     * */
     public static class Detection {
         public float x1, y1, x2, y2;
         public float confidence;
@@ -119,6 +213,14 @@ public class YOLOv8Detector {
         }
     }
 
+    /**
+    * This method will recieve an image frame as a matrix and then apply all calculation above
+    * and produce a list of all detection boxes with mathematical formulas applied
+    *
+    * @author Duc Phat Hoang
+    *
+    * @Version 1.0
+    * */
     public List<Detection> detect(Mat frame) throws OrtException {
         float[] inputData = preprocessMat(frame);
 
@@ -140,6 +242,15 @@ public class YOLOv8Detector {
         return detections;
     }
 
+    /**
+     * This method will recieve a raw image frame as a matrix and then process it into a
+     * float array of rgb color for further processing and calculation to produce a final
+     * classification
+     *
+     * @author Duc Phat Hoang
+     *
+     * @Version 1.0
+     * */
     private float[] preprocessMat(Mat frame) {
         Mat resized = new Mat();
         Imgproc.resize(frame, resized, new Size(inputWidth, inputHeight));
