@@ -13,7 +13,7 @@ public class ArduinoComm {
     private static final int  BAUD_RATE = 9600;
     private static final int NUM_DATA_BITS = 8;
     private static final int NUM_DATA_STOP_BITS = 1;
-    private static final SerialPort PORT= SerialPort.getCommPort("/dev/tty.usbmodem1101");
+    private static final SerialPort PORT= SerialPort.getCommPort("/dev/tty.usbmodem21201");
 
     public static final void COMMUNICATE(boolean isRotten) throws IOException, InterruptedException {
         PORT.setBaudRate(BAUD_RATE);
