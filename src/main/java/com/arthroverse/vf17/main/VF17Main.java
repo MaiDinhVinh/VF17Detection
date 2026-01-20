@@ -13,7 +13,7 @@
  * Last Modified:   [10-22-2025]
  * <p>
  * File Name:       [VF17Main.java]
- * Developer:       Mai Dinh Vinh
+ * Developer:       Le Ngoc Han
  * Description:     [The main entry point of the entire application]
  ******************************************************************************/
 
@@ -29,36 +29,65 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main entry point of the VF17Detection JavaFX application.
+ * <p>
+ * This class is responsible for initializing global UI themes,
+ * loading the primary FXML layout, and launching the main window.
+ *
+ * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+ * @version 1.0
+ */
 public class VF17Main extends Application {
+
     /**
-     * This is actual JavaFX code convention, I totally don't know why they need this method though
-     * But if you want to do anything before initialize all UIs, you have to do it here
+     * JavaFX lifecycle method invoked automatically after application launch.
+     * <p>
+     * This method initializes MaterialFX and JavaFX themes, loads the main UI
+     * from FXML, wires the controller lifecycle, and displays the primary stage.
      *
-     * It is kinda stupid though I'm not gonna lie
-     * @author Le Ngoc Han
+     * @param primaryStage the primary stage provided by the JavaFX runtime
+     * @throws Exception if loading FXML or initializing the scene fails
      *
-     * @Version 1.0*/
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
+     */
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("VF17Detection");
+
         UserAgentBuilder.builder()
-                .themes(JavaFXThemes.MODENA) // Optional if you don't need JavaFX's default theme, still recommended though
-                .themes(MaterialFXStylesheets.forAssemble(true)) // Adds the MaterialFX's default theme. The boolean argument is to include legacy controls
-                .setDeploy(true) // Whether to deploy each theme's assets on a temporary dir on the disk
-                .setResolveAssets(true) // Whether to try resolving @import statements and resources urls
-                .build() // Assembles all the added themes into a single CSSFragment (very powerful class check its documentation)
-                .setGlobal(); // Finally, sets the produced stylesheet as the global User-Agent stylesheet//Once everything has been set up, redirect the user to the authenication form
+                .themes(JavaFXThemes.MODENA)
+                .themes(MaterialFXStylesheets.forAssemble(true))
+                .setDeploy(true)
+                .setResolveAssets(true)
+                .build()
+                .setGlobal();
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/HomepageUI.fxml"));
         Parent root = loader.load();
+
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+
         HomepageUIController controller = loader.getController();
         controller.handleShutdown(primaryStage);
+
         primaryStage.show();
     }
 
+    /**
+     * Standard Java entry point.
+     * <p>
+     * Delegates application startup to the JavaFX runtime, which
+     * subsequently invokes {@link #start(Stage)}.
+     *
+     * @param args command-line arguments passed to the application
+     *
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
+     */
     public static void main(String[] args) {
         launch(args);
     }
