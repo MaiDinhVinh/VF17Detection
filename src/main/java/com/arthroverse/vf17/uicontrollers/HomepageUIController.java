@@ -3,11 +3,11 @@
  * Course:          [CECS1011 - Intro to CECS]
  * Semester:        [Fall 2025]
  * <p>
- * Members:         Dinh Hieu Minh <25minh.dh2@vinuni.edu.vn>,
- *                  Duc Phat Hoang <25phat.hd@vinuni.edu.vn>,
- *                  Le Ngoc Han <25han.ln@vinuni.edu.vn>,
- *                  Ngo Van Thang <25thang.nv@vinuni.edu.vn>,
- *                  Mai Dinh Vinh <25vinh.md@vinuni.edu.vn>
+ * Members:         Dinh Hieu Minh (25minh.dh2@vinuni.edu.vn),
+ *                  Duc Phat Hoang (25phat.hd@vinuni.edu.vn),
+ *                  Le Ngoc Han (25han.ln@vinuni.edu.vn),
+ *                  Ngo Van Thang (25thang.nv@vinuni.edu.vn),
+ *                  Mai Dinh Vinh (25vinh.md@vinuni.edu.vn)
  * <p>
  * Date Created:    [10-15-2025]
  * Last Modified:   [10-22-2025]
@@ -33,11 +33,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * JavaFX UI controller for the homepage view.
+ * <p>
+ * This controller initializes the camera preview, manages periodic frame updates,
+ * and displays inference results in the frontend output log.
+ *
+ * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+ * @version 1.0
+ */
 public class HomepageUIController implements Initializable {
 
     @FXML
@@ -64,17 +72,20 @@ public class HomepageUIController implements Initializable {
      * Java AWT Buffered Image so that it acts like a video camera view, initalize the
      * detection handler, or anything else you need to setup before initialize the UI
      *
-     * @author Le Ngoc Han
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
      *
-     * @Version 1.0
+     * @throws RuntimeException if initialization of detection handler fails
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             outputLogContainerStatic = outputLogContainer;
             inferOutputPaneStatic = inferOutputPane;
+
             DetectionHandler Handler = new DetectionHandler();
             detectionHandler = Handler;
+
             setupFrameUpdater();
 
             mainCamView.setPreserveRatio(true);
@@ -84,29 +95,21 @@ public class HomepageUIController implements Initializable {
             frameUpdater.start();
 
             BufferedImage bufferedImage = detectionHandler.getLatestFrame();
-
             if (bufferedImage != null) {
                 Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
                 mainCamView.setImage(fxImage);
             }
-
-            frameUpdater = new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    updateFrame();
-                }
-            };
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * This method sets an animation timer which will assign a new frame to the ImageView
      * and acts like video camera frame
-     * @author Le Ngoc Han
      *
-     * @Version 1.0
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
      */
     private void setupFrameUpdater() {
         frameUpdater = new AnimationTimer() {
@@ -120,13 +123,12 @@ public class HomepageUIController implements Initializable {
     /**
      * This method will get the latest frame from OpenCV camera implementation and
      * assign it to the ImageView
-     * @author Le Ngoc Han
      *
-     * @Version 1.0
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
      */
     private void updateFrame() {
         BufferedImage bufferedImage = detectionHandler.getLatestFrame();
-
         if (bufferedImage != null) {
             Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
             mainCamView.setImage(fxImage);
@@ -134,12 +136,12 @@ public class HomepageUIController implements Initializable {
     }
 
     /**
-    * This method will cleanup all resources such as camera and YOLO Inference objects
-    * such as Concurrency objects,...
-    * @author Le Ngoc Han
-    *
-    * @Version 1.0
-    * */
+     * This method will cleanup all resources such as camera and YOLO Inference objects
+     * such as Concurrency objects,...
+     *
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
+     */
     public void shutdown() {
         if (frameUpdater != null) {
             frameUpdater.stop();
@@ -152,14 +154,14 @@ public class HomepageUIController implements Initializable {
     /**
      * This method will assign a listener to the current UI and will initiate
      * the shutdown whenever the user close the windows
-     * @author Le Ngoc Han
      *
-     * @Version 1.0
+     * @param stage the primary application stage
+     *
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
      */
-    public void handleShutdown(Stage stage){
-        stage.setOnCloseRequest(event -> {
-            shutdown();
-        });
+    public void handleShutdown(Stage stage) {
+        stage.setOnCloseRequest(event -> shutdown());
     }
 
     /**
@@ -167,23 +169,31 @@ public class HomepageUIController implements Initializable {
      * This method not only add the inference output but also add some CSS effects to the text
      * like fonts, size, color based on the output
      *
-     * @author Le Ngoc Han
+     * @param inferOutput textual inference result
+     * @param isRotten {@code true} if detected object is rotten; {@code false} otherwise
      *
-     * @Version 1.0
+     * @author Le Ngoc Han (25han.ln@vinuni.edu.vn)
+     * @version 1.0
      */
-    public static void frontendUpdateOutput(String inferOutput, boolean isRotten){
+    public static void frontendUpdateOutput(String inferOutput, boolean isRotten) {
         Platform.runLater(() -> {
             Label label = new Label(inferOutput);
-            if(isRotten){
-                label.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-font-family: 'JetBrains Mono Regular';");
-            }else{
-                label.setStyle("-fx-font-size: 16px; -fx-text-fill: green; -fx-font-family: 'JetBrains Mono Regular';");
+            if (isRotten) {
+                label.setStyle(
+                        "-fx-font-size: 16px; -fx-text-fill: red; -fx-font-family: 'JetBrains Mono Regular';");
+            } else {
+                label.setStyle(
+                        "-fx-font-size: 16px; -fx-text-fill: green; -fx-font-family: 'JetBrains Mono Regular';");
             }
             label.setWrapText(true);
             outputLogContainerStatic.getChildren().add(label);
             inferOutputPaneStatic.setVvalue(1.0);
-            if(outputLogContainerStatic.getChildren().size() > MAX_RECORD){
-                outputLogContainerStatic.getChildren().remove(0, outputLogContainerStatic.getChildren().size() - 1 - 10);
+
+            if (outputLogContainerStatic.getChildren().size() > MAX_RECORD) {
+                outputLogContainerStatic
+                        .getChildren()
+                        .remove(0,
+                                outputLogContainerStatic.getChildren().size() - MAX_RECORD);
             }
         });
     }
