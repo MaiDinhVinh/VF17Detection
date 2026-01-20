@@ -37,11 +37,21 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.arthroverse.vf17.uicontrollers.HomepageUIController;
 
+/**
+ * Handles real-time camera capture and YOLOv8 inference for VF17 detection.
+ * It draws detection overlays, manages a virtual trigger line, and sends serial
+ * signals to Arduino based on detected object classes and line-crossing logic.
+ *
+ * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn),
+ *         Ngo Van Thang (25thang.nv@vinuni.edu.vn),
+ *         Mai Dinh Vinh (25vinh.md@vinuni.edu.vn)
+ * @version 1.0
+ */
 public class DetectionHandler {
 
     /**
-     * All classes that are used to train the modeel
-     * */
+     * All classes (labels) that are used to train the modeel
+     */
     private static final String[] ALL_CLASSES = {
             "fresh apple",
             "fresh banana",
@@ -64,26 +74,35 @@ public class DetectionHandler {
 
     /**
      * These are all fields that are used to control the arduino serial signal sending by
-     * create a visible line on the main UI*/
-    private static final int VIRTUAL_LINE_X = 850;
+     * create a visible line on the main UI
+     */
+    private static final int VIRTUAL_LINE_X = 500;
+
+    //TODO: vinh
+    private static final float TRIGGER_FRACTION = 0.5f;
+    private enum MotionDirection { LEFT_TO_RIGHT, RIGHT_TO_LEFT }
+    private static final MotionDirection MOTION_DIRECTION = MotionDirection.LEFT_TO_RIGHT;
+
     private final Map<String, Boolean> hasPassed = new HashMap<>();
     private final Set<String> alreadyTriggered = new HashSet<>();
     private static final long COOLDOWN_MS = 3000;
 
     private YOLOv8Detector detector; //main model inference instance
+    private VideoCapture camera;    //main OpenCV camemra instance
 
-    private VideoCapture camera; //main OpenCV camemra instance
+    private final AtomicReference<BufferedImage> latestFrame = new AtomicReference<>();
+    private final AtomicReference<List<YOLOv8Detector.Detection>> latestDetections = new AtomicReference<>();
 
-    private final AtomicReference<BufferedImage> latestFrame = new AtomicReference<>(); //A special datatype that allows a single BufferedFrame object's reference to be regularly updated without casuing problems
-    private final AtomicReference<List<YOLOv8Detector.Detection>> latestDetections = new AtomicReference<>(); //Same as BufferedImage thing above but it is for the detection since we have multiple detections object in a short time interval
-
-    private final ExecutorService inferenceExecutor = Executors.newSingleThreadExecutor(); //A separated thread service that is used only for the model inference
-    private final ExecutorService cameraExecutor = Executors.newSingleThreadExecutor(); //A separated thread service that is used only for the OpenCV camera
+    private final ExecutorService inferenceExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService cameraExecutor = Executors.newSingleThreadExecutor();
 
     /**
-    * Other variables for inference instance and OpenCV configurations*/
+     * Other variables for inference instance and OpenCV configurations
+     */
     private volatile boolean isRunning = false;
     private volatile boolean isInferenceRunning = false;
+
+    //camera frame FPS - Phat
     private int frameSkip = 2;
     private int frameCount = 0;
     private double currentFps = 0;
@@ -92,9 +111,10 @@ public class DetectionHandler {
      * The constructor for the class where we load the OpenCV model on local machine and load the actual
      * ONNX runtime model file to OpenCV
      *
-     * @author Ngo Van Thang
-     *
-     * @Version 1.0*/
+     * @author Ngo Van Thang (25thang.nv@vinuni.edu.vn)
+     * @version 1.0
+     * @throws OrtException if the ONNX Runtime environment or session cannot be initialized
+     */
     public DetectionHandler() throws OrtException {
         nu.pattern.OpenCV.loadLocally();
         detector = new YOLOv8Detector("src/main/resources/model/best.onnx");
@@ -113,9 +133,9 @@ public class DetectionHandler {
      * There are 2 lines for camera resolution changes and 1 line to activate a separate thread
      * service for the OpenCV camera to prevent thread issue
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0*/
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn)
+     * @version 1.0
+     */
     public void startCamera() {
         if (isRunning) {
             return;
@@ -135,9 +155,9 @@ public class DetectionHandler {
      * This method will be used to cleanup all resources related to the OpenCV camera such as the thread service,
      * the remaining frames of the BufferedFrame instances
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0*/
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn)
+     * @version 1.0
+     */
     public void stopCamera() {
         isRunning = false;
         try {
@@ -155,26 +175,35 @@ public class DetectionHandler {
     /**
      * This method merely serves as a method to get the latest frame from the camera
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0
-     * */
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn)
+     * @version 1.0
+     * @return the most recent camera frame as a {@link BufferedImage}
+     */
     public BufferedImage getLatestFrame() {
         return latestFrame.get();
     }
 
-
     /**
-     * This method will use the spatial coordinate of the detection box and calculate the mid-point between
-     * 2 x-coordinate of the box and see if that midpoint is smaller than the current position of the
-     * virtual line
+     * Computes whether a detection has passed the virtual trigger line, based on a configurable
+     * trigger point inside the bounding box and the selected motion direction.
      *
-     * @author Ngo Van Thang
+     * @param det the detection whose position is used for line-crossing evaluation
+     * @return {@code true} if the detection has passed the trigger line based on the configured direction; otherwise {@code false}
      *
-     * @Version 1.0*/
+     * @author Dinh Hieu Minh (25minh.dh2@vinuni.edu.vn)
+     * @version 1.0
+     */
     private boolean hasPassed(YOLOv8Detector.Detection det) {
-        float centerX = (det.x1 + det.x2) / 2;
-        return centerX < VIRTUAL_LINE_X;
+        float width = det.x2 - det.x1;
+        if (width <= 0) {
+            return false;
+        }
+        float triggerX = det.x1 + TRIGGER_FRACTION * width;
+        if (MOTION_DIRECTION == MotionDirection.LEFT_TO_RIGHT) {
+            return triggerX >= VIRTUAL_LINE_X;
+        } else {
+            return triggerX <= VIRTUAL_LINE_X;
+        }
     }
 
     /**
@@ -187,10 +216,11 @@ public class DetectionHandler {
      * Otherwise the method will trigger a 3000ms cooldown in the main Thread and
      * return {@code true} and then remove the triggeredid out of the set
      *
-     * @author Ngo Van Thang
+     * @author Ngo Van Thang (25thang.nv@vinuni.edu.vn)
+     * @version 1.0
      *
-     * @Version 1.0
-     * */
+     * bo qua
+     */
     private boolean shouldTriggerOutput(String className, boolean currentlyPassed) {
         String triggerId = className;
         if (alreadyTriggered.contains(triggerId)) {
@@ -218,10 +248,9 @@ public class DetectionHandler {
      * if an object passed, it will trigger the code and depend on the detection classes triggers a
      * serial signal to the Arduino board
      *
-     * @author Ngo Van Thang
-     *
-     * @Version 1.0
-     * */
+     * @author Ngo Van Thang (25thang.nv@vinuni.edu.vn)
+     * @version 1.0
+     */
     private void drawVirtualLine(Mat frame) {
         Scalar lineColor = new Scalar(255, 0, 0);
         int thickness = 3;
@@ -234,10 +263,10 @@ public class DetectionHandler {
      * This is where all detection, fps count, conditional-based serial signal sending mechanism are implemented
      * This is where the real-time detection (drawing detection box) happens
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0
-     * */
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn),
+     *         Mai Dinh Vinh (25vinh.md@vinuni.edu.vn)
+     * @version 1.0
+     */
     private void runDetectionLoop() {
         Mat currentFrame = new Mat();
         Mat displayFrame = new Mat();
@@ -260,7 +289,6 @@ public class DetectionHandler {
                             latestDetections.set(detections);
                             if (!detections.isEmpty()) {
                                 for (YOLOv8Detector.Detection det : detections) {
-//                                    ArduinoComm.RESET_SIGNAL();
                                     String className = ALL_CLASSES[det.classId];
                                     boolean objectHasPassed = hasPassed(det);
 
@@ -321,17 +349,17 @@ public class DetectionHandler {
      *
      * This method will recieve an image frame in Matrix format and process it
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0*/
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn)
+     * @version 1.0
+     */
     private void drawDetections(Mat frame, List<YOLOv8Detector.Detection> detections) {
         for (YOLOv8Detector.Detection det : detections) {
             Point topLeft = new Point(det.x1, det.y1);
             Point bottomRight = new Point(det.x2, det.y2);
             Scalar color;
-            if(ALL_CLASSES[det.classId].contains("rotten")){
+            if (ALL_CLASSES[det.classId].contains("rotten")) {
                 color = new Scalar(0, 0, 255);
-            }else{
+            } else {
                 color = new Scalar(0, 255, 0);
             }
             Imgproc.rectangle(frame, topLeft, bottomRight, color, 2);
@@ -354,10 +382,9 @@ public class DetectionHandler {
      * This method is used to convert a frame matrix (including the drawn detection box)
      * to a BufferedImage
      *
-     * @author Ngo Van Thang
-     *
-     * @Version 1.0
-     * */
+     * @author Ngo Van Thang (25thang.nv@vinuni.edu.vn)
+     * @version 1.0
+     */
     private BufferedImage matToBufferedImage(Mat mat) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
         if (mat.channels() > 1) {
@@ -373,10 +400,9 @@ public class DetectionHandler {
      * This method will cleanup all of the processes related to the program such as inference instance,
      * thread service for the inference instance, close the camera
      *
-     * @author Ngo Van Thang
-     *
-     * @Version 1.0
-     * */
+     * @author Ngo Van Thang (25thang.nv@vinuni.edu.vn)
+     * @version 1.0
+     */
     private void cleanup() {
         if (camera != null && camera.isOpened()) {
             camera.release();
@@ -399,10 +425,9 @@ public class DetectionHandler {
      * This method is used to shutdown the whole program including all resources + the camera and
      * remove the YOLODetection inference instance and then close it properly
      *
-     * @author Duc Phat Hoang
-     *
-     * @Version 1.0
-     * */
+     * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn)
+     * @version 1.0
+     */
     public void shutdown() {
         if (isRunning) {
             stopCamera();
