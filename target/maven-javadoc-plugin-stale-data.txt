@@ -6,14 +6,14 @@
 '/Users/ducksabervn/.m2/repository/com/microsoft/onnxruntime/onnxruntime/1.23.1/onnxruntime-1.23.1.jar:/Users/ducksabervn/.m2/repository/org/openpnp/opencv/4.9.0-0/opencv-4.9.0-0.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-controls/22.0.2/javafx-controls-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-controls/22.0.2/javafx-controls-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-web/22.0.2/javafx-web-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-web/22.0.2/javafx-web-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-fxml/22.0.2/javafx-fxml-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-fxml/22.0.2/javafx-fxml-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-swing/22.0.2/javafx-swing-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-swing/22.0.2/javafx-swing-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-media/22.0.2/javafx-media-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-media/22.0.2/javafx-media-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-graphics/22.0.2/javafx-graphics-22.0.2.jar:/Users/ducksabervn/.m2/repository/org/openjfx/javafx-graphics/22.0.2/javafx-graphics-22.0.2-mac-aarch64.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/materialfx/11.17.0/materialfx-11.17.0.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/mfxcore/11.8.0/mfxcore-11.8.0.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/mfxlocalization/11.1.0/mfxlocalization-11.1.0.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/mfxresources/11.9.1/mfxresources-11.9.1.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/mfxeffects/11.3.0/mfxeffects-11.3.0.jar:/Users/ducksabervn/.m2/repository/io/github/palexdev/virtualizedfx/11.9.6/virtualizedfx-11.9.6.jar:/Users/ducksabervn/.m2/repository/com/fazecast/jSerialComm/2.11.2/jSerialComm-2.11.2.jar'
 -encoding
 'UTF-8'
--private
+-protected
 -source
 '17'
 -sourcepath
 '/Users/ducksabervn/DATA/coding/VF17Detection/src/main/java'
 -author
 -bottom
-'Copyright &#169; 2026. All rights reserved.'
+'Copyright &#169; 2026 <a href="https://profile.ducksabervn.com">DucksaberVN</a>. All rights reserved.'
 -charset
 'UTF-8'
 -d
@@ -21,11 +21,11 @@
 -docencoding
 'UTF-8'
 -doctitle
-'Gumball1011 1.0-SNAPSHOT API'
+'VF17Detection 2.0 API'
 -use
 -version
 -windowtitle
-'Gumball1011 1.0-SNAPSHOT API'
+'VF17Detection 2.0 API'
 com.arthroverse.vf17.uicontrollers
 com.arthroverse.vf17.main
 com.arthroverse.vf17.detection
@@ -54,21 +54,20 @@ com.arthroverse.vf17.microcontroller
 /Users/ducksabervn/.m2/repository/io/github/palexdev/virtualizedfx/11.9.6/virtualizedfx-11.9.6.jar = 1748272762495
 /Users/ducksabervn/.m2/repository/com/fazecast/jSerialComm/2.11.2/jSerialComm-2.11.2.jar = 1751355111000
 /Users/ducksabervn/DATA/coding/VF17Detection/src/main/java = 1760510714118
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/constant-values.html = 1768907381804
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/tag-search-index.js = 1768907381850
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/overview-tree.html = 1768907381840
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/module-search-index.js = 1768907381849
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/index.html = 1768907381842
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/package-search-index.js = 1768907381849
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/jquery-ui.overrides.css = 1768907381863
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/index-all.html = 1768907381857
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/allpackages-index.html = 1768907381849
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/member-search-index.js = 1768907381850
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/script.js = 1768907381860
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/stylesheet.css = 1768907381860
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/overview-summary.html = 1768907381857
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/help-doc.html = 1768907381859
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/element-list = 1768907381788
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/allclasses-index.html = 1768907381848
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/type-search-index.js = 1768907381850
-/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/search.js = 1768907381861
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/tag-search-index.js = 1769142977416
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/overview-tree.html = 1769142977407
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/module-search-index.js = 1769142977415
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/index.html = 1769142977408
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/package-search-index.js = 1769142977415
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/jquery-ui.overrides.css = 1769142977427
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/index-all.html = 1769142977421
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/allpackages-index.html = 1769142977414
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/member-search-index.js = 1769142977415
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/script.js = 1769142977424
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/stylesheet.css = 1769142977424
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/overview-summary.html = 1769142977421
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/help-doc.html = 1769142977423
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/element-list = 1769142977384
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/allclasses-index.html = 1769142977413
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/type-search-index.js = 1769142977415
+/Users/ducksabervn/DATA/coding/VF17Detection/target/reports/apidocs/search.js = 1769142977425
