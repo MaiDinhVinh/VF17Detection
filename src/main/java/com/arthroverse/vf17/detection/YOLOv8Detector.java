@@ -28,7 +28,7 @@ import org.opencv.imgproc.Imgproc;
  * Provides YOLOv8 inference using ONNX Runtime and converts raw model outputs into
  * filtered detection boxes, including Non-Maximum Suppression (NMS).
  *
- * @author Dinh Hieu Minh (25minh.dh2@vinuni.edu.vn)
+ * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn), Ngo Van Thang (25thang.nv@vinuni.edu.vn), Mai Dinh Vinh (25vinh.md@vinuni.edu.vn)
  * @version 1.0
  */
 public class YOLOv8Detector {
