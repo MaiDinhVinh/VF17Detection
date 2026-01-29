@@ -10,7 +10,7 @@
  *                  Mai Dinh Vinh <25vinh.md@vinuni.edu.vn>
  * <p>
  * Date Created:    [10-15-2025]
- * Last Modified:   [10-22-2025]
+ * Last Modified:   [29-1-2026]
  * <p>
  * File Name:       [DetectionHandler.java]
  * Developer:       Duc Phat Hoang, Ngo Van Thang
@@ -22,6 +22,7 @@ package com.arthroverse.vf17.detection;
 
 import ai.onnxruntime.OrtException;
 import com.arthroverse.vf17.microcontroller.ArduinoComm;
+import com.arthroverse.vf17.utilities.AlertUtil;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
@@ -265,7 +266,7 @@ public class DetectionHandler {
      *
      * @author Duc Phat Hoang (25phat.hd@vinuni.edu.vn),
      *         Mai Dinh Vinh (25vinh.md@vinuni.edu.vn)
-     * @version 1.0
+     * @version 2.0
      */
     private void runDetectionLoop() {
         Mat currentFrame = new Mat();
@@ -276,6 +277,17 @@ public class DetectionHandler {
             while (isRunning && camera != null && camera.isOpened()) {
                 boolean success = camera.read(currentFrame);
                 if (!isRunning || !success || currentFrame.empty()) {
+                    if(!cameraExecutor.isShutdown()){
+                        try{
+                            throw new IllegalStateException("No camera detected!");
+                        }catch(IllegalStateException e){
+                            AlertUtil.generateExceptionViewer(AlertUtil.generateExceptionString(e),
+                                    "please insert a camera device and restart the application");
+                        }finally{
+                            cleanup();
+                            shutdown();
+                        }
+                    }
                     break;
                 }
                 frameCount++;
