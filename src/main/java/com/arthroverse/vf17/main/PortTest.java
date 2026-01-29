@@ -20,7 +20,9 @@
 
 package com.arthroverse.vf17.main;
 
+import com.arthroverse.vf17.utilities.AlertUtil;
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,8 +59,7 @@ public class PortTest {
     /**
      * Serial port instance representing the connected Arduino device.
      */
-    private static final SerialPort PORT =
-            SerialPort.getCommPort("/dev/tty.usbmodem11101");
+    private static SerialPort PORT = null;
 
     /**
      * Application entry point.
@@ -69,22 +70,26 @@ public class PortTest {
      * back to the 0-degree position.
      *
      * @param args command-line arguments (not used)
-     * @throws IOException if an I/O error occurs while writing to the serial port
      *
      * @author Dinh Hieu Minh (25minh.dh2@vinuni.edu.vn)
      * @version 1.0
      */
-    public static void main(String[] args) throws IOException {
-        PORT.setBaudRate(BAUD_RATE);
-        PORT.setNumDataBits(NUM_DATA_BITS);
-        PORT.setNumStopBits(NUM_DATA_STOP_BITS);
+    public static void main(String[] args){
+        try{
+            PORT = SerialPort.getCommPort("/dev/tty.usbmodem11101");
+            PORT.setBaudRate(BAUD_RATE);
+            PORT.setNumDataBits(NUM_DATA_BITS);
+            PORT.setNumStopBits(NUM_DATA_STOP_BITS);
 
-        PORT.openPort();
+            PORT.openPort();
 
-        OutputStream outputStream = PORT.getOutputStream();
+            OutputStream outputStream = PORT.getOutputStream();
 
-        byte[] data = "1".getBytes(StandardCharsets.UTF_8);
-        outputStream.write(data);
-        outputStream.flush();
+            byte[] data = "1".getBytes(StandardCharsets.UTF_8);
+            outputStream.write(data);
+            outputStream.flush();
+        }catch(SerialPortInvalidPortException | IOException e){
+            e.printStackTrace();
+        }
     }
 }
